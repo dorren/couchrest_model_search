@@ -19,9 +19,12 @@ Gem::Specification.new do |s|
   s.files = [
     ".document",
      ".gitignore",
+     ".rspec",
      "LICENSE",
      "README.rdoc",
      "Rakefile",
+     "VERSION",
+     "couchrest_model_search.gemspec",
      "features/couchrest_model_search.feature",
      "features/step_definitions/couchrest_model_search_steps.rb",
      "features/support/env.rb",
