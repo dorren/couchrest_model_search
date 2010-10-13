@@ -52,7 +52,11 @@ end
 
 class CouchRest::Database
   def search(klass, view_fn, query, options={})
-    CouchRest.get CouchRest.paramify_url("#{@root}/_fti/_design/#{klass}/#{view_fn}", options.merge(:q => query))
+    url = CouchRest.paramify_url("#{@root}/_fti/_design/#{klass}/#{view_fn}", options.merge(:q => query))
+    ActiveSupport::Notifications.instrument("search.lucene",
+                                                :query => url) do
+      CouchRest.get url
+    end
   end
 end
 
@@ -64,9 +68,20 @@ class CouchRest::Model::Base
   end
   
   def self.update_search_doc
-    dbdoc = database.get '_design/#{self.to_s}'
+    dbdoc = database.get "_design/#{self.to_s}"
     dbdoc.update design_doc
     dbdoc.save
   end
 end
 
+
+# see http://gist.github.com/566725 on how to use ActiveSupport logging
+class CouchRestModelSearchLogger < ActiveSupport::LogSubscriber
+  def search(event)
+    name = '%s (%.1fms)' % ["Couchdb-lucene Query", event.duration]
+    url = event.payload[:query]
+    info "  #{color(name, YELLOW, true)}  [ #{url} ]"
+  end
+end
+
+CouchRestModelSearchLogger.attach_to :lucene
