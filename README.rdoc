@@ -1,17 +1,25 @@
 = couchrest_model_search
 
-Description goes here.
+This add search method calls to couchrest_model gem. Assuming you are using couchdb-lucene.
 
-== Note on Patches/Pull Requests
- 
-* Fork the project.
-* Make your feature addition or bug fix.
-* Add tests for it. This is important so I don't break it in a
-  future version unintentionally.
-* Commit, do not mess with rakefile, version, or history.
-  (if you want to have your own version, that is fine but bump version in a commit by itself I can ignore when I pull)
-* Send me a pull request. Bonus points for topic branches.
+== Install
+  gem install couchrest_model_search
+  
+== Usage
+  class Article < CouchRest::Model::Base
+  end
 
-== Copyright
+  # save design doc to couchdb if you have existing one.
+  # by default, couchrest_model only update view_by functions.
+  Article.update_search_doc    
 
-Copyright (c) 2010 Dorren Chen. See LICENSE for details.
+  @articles = Article..search 'by_content', "apple"  # search by keyword apple
+  
+  # you can also custom the search function.
+  class CustomArticle < CouchRest::Model::Base
+    def self.fulltext
+      { "by_content" => {"index" => %(function(doc) {})}
+      }
+    end
+  end
+
