@@ -13,7 +13,7 @@ This add search method calls to couchrest_model gem. Assuming you are using couc
   # by default, couchrest_model only update view_by functions.
   Article.update_search_doc    
 
-  @articles = Article..search 'by_content', "apple"  # search by keyword apple
+  @articles = Article.search 'by_content', "apple"  # search by keyword apple
   
   # you can also custom the search function.
   class CustomArticle < CouchRest::Model::Base
