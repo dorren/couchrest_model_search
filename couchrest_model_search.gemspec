@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Dorren Chen"]
-  s.date = %q{2010-10-13}
+  s.date = %q{2010-10-15}
   s.description = %q{Add search function to CouchRest Model, assuming you're using couchdb-lucene}
   s.email = %q{dorrenchen@gmail.com}
   s.extra_rdoc_files = [

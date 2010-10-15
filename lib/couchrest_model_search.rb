@@ -41,6 +41,26 @@ module CouchRest
               }
             }
         end
+        
+        def update_search_doc
+          saved = stored_design_doc
+          if saved
+            saved["fulltext"] = design_doc["fulltext"]
+            saved.save
+            saved
+          else
+            design_doc.delete("_rev")
+            design_doc.database = database
+            design_doc.save
+            design_doc
+          end
+        end
+        
+        alias_method :orig_save_design_doc, :save_design_doc
+        def save_design_doc(db = database, force = false)
+          orig_save_design_doc(db, force)
+          update_search_doc
+        end
       end
     end
   end
@@ -78,20 +98,7 @@ class CouchRest::Model::Base
   def self.search_by(fn_name, fn)
     design_doc["fulltext"] ||= {}
     design_doc["fulltext"]["by_#{fn_name}"] = fn.stringify_keys!
-  end
-  
-  def self.update_search_doc
-    saved = stored_design_doc
-    if saved
-      saved["fulltext"] = design_doc["fulltext"]
-      saved.save
-      saved
-    else
-      design_doc.delete("_rev")
-      design_doc.database = database
-      design_doc.save
-      design_doc
-    end
+    req_design_doc_refresh
   end
 end
 
