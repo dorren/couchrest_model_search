@@ -1,22 +1,52 @@
 require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
 
-describe "CouchrestModelSearch" do
-  class Article < CouchRest::Model::Base
+class Article < CouchRest::Model::Base
+  use_database DB
+end
+
+describe "CouchrestModelSearch" do  
+  before :each do
+    if doc = Article.stored_design_doc
+      doc.database = Article.database
+      doc.destroy
+    end
   end
   
   it "should overwrite default_design_doc" do
     Article.design_doc["fulltext"].should_not be_nil
-  end
+  end  
 end
-
-describe "CouchrestModelSearch" do  
+  
+describe "overwrite design doc" do  
   class CustomArticle < CouchRest::Model::Base
-    def self.fulltext
-      { "by_content" => {"index" => %(function(doc) {})}}
+    use_database DB
+    search_by :fulltext,
+              {:index => %(function(doc) {})}
+  end
+   
+  before :each do
+    if doc = CustomArticle.stored_design_doc
+      doc.database = CustomArticle.database
+      doc.destroy
     end
   end
   
   it "should allow class to overwrite fulltext function" do
-    CustomArticle.design_doc["fulltext"].should == CustomArticle.fulltext
+    CustomArticle.update_search_doc
+    CustomArticle.stored_design_doc["fulltext"]["by_fulltext"]["index"].should ==  %(function(doc) {})
+  end
+  
+  it "should update search doc" do
+    CustomArticle.update_search_doc
+    CustomArticle.stored_design_doc["fulltext"]["by_fulltext"]["index"].should ==  %(function(doc) {})
+    
+    class CustomArticle < CouchRest::Model::Base
+      use_database DB
+      search_by :fulltext,
+                {:index => %(function(doc) {// hello})}
+    end
+    
+    CustomArticle.update_search_doc
+    CustomArticle.stored_design_doc["fulltext"]["by_fulltext"]["index"].should == %(function(doc) {// hello})
   end
 end

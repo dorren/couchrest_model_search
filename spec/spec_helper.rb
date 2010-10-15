@@ -4,6 +4,9 @@ require 'couchrest_model_search'
 require 'rspec'
 require 'rspec/autorun'
 
+COUCHDB_SERVER  = CouchRest.new "http://admin:password@localhost:5984"
+DB         = COUCHDB_SERVER.database!('couchrest_model_search_test')
+
 RSpec.configure do |config|
   # == Mock Framework
   #
