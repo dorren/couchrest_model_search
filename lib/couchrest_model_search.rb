@@ -48,7 +48,7 @@ module CouchRest
             saved["fulltext"] = design_doc["fulltext"]
             saved.save
             saved
-          else
+          elsif !saved
             design_doc.delete("_rev")
             design_doc.database = database
             design_doc.save
