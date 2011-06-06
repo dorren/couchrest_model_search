@@ -44,11 +44,11 @@ module CouchRest
         
         def update_search_doc
           saved = stored_design_doc
-          if saved
+          if saved && saved["fulltext"] != design_doc["fulltext"]
             saved["fulltext"] = design_doc["fulltext"]
             saved.save
             saved
-          else
+          elsif !saved
             design_doc.delete("_rev")
             design_doc.database = database
             design_doc.save

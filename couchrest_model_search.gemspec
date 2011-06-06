@@ -5,63 +5,28 @@
 
 Gem::Specification.new do |s|
   s.name = %q{couchrest_model_search}
-  s.version = "0.0.3"
+  s.version = File.read "VERSION"
 
-  s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
-  s.authors = ["Dorren Chen"]
+  s.authors = ["Dorren Chen", "Matt Parker"]
   s.date = %q{2010-10-18}
-  s.description = %q{Add search function to CouchRest Model, assuming you're using couchdb-lucene}
+  s.description = %q{Add couchdb-lucene search support to CouchRest Model}
   s.email = %q{dorrenchen@gmail.com}
   s.extra_rdoc_files = [
     "LICENSE",
-     "README.rdoc"
+     "README.markdown"
   ]
-  s.files = [
-    ".document",
-     ".gitignore",
-     ".rspec",
-     "LICENSE",
-     "README.rdoc",
-     "Rakefile",
-     "VERSION",
-     "couchrest_model_search.gemspec",
-     "features/couchrest_model_search.feature",
-     "features/step_definitions/couchrest_model_search_steps.rb",
-     "features/support/env.rb",
-     "lib/couchrest_model_search.rb",
-     "spec/couchrest_model_search_spec.rb",
-     "spec/spec_helper.rb"
-  ]
+  
+  s.files         = `git ls-files`.split("\n")
+  s.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
+  #s.executables   = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
+  
   s.homepage = %q{http://github.com/dorren/couchrest_model_search}
   s.rdoc_options = ["--charset=UTF-8"]
   s.require_paths = ["lib"]
-  s.rubygems_version = %q{1.3.7}
-  s.summary = %q{Add search function to CouchRest Model}
-  s.test_files = [
-    "spec/couchrest_model_search_spec.rb",
-     "spec/spec_helper.rb"
-  ]
+  s.summary = %q{Add couchdb-lucene search support to CouchRest Model}
 
-  if s.respond_to? :specification_version then
-    current_version = Gem::Specification::CURRENT_SPECIFICATION_VERSION
-    s.specification_version = 3
-
-    if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
-      s.add_development_dependency(%q<active_support>, [">= 3.0.0"])
-      s.add_development_dependency(%q<couchrest_model>, [">= 1.0.0.beta7"])
-      s.add_development_dependency(%q<rspec>, [">= 2.0.0"])
-      s.add_development_dependency(%q<cucumber>, [">= 0"])
-    else
-      s.add_dependency(%q<active_support>, [">= 3.0.0"])
-      s.add_dependency(%q<couchrest_model>, [">= 1.0.0.beta7"])
-      s.add_dependency(%q<rspec>, [">= 2.0.0"])
-      s.add_dependency(%q<cucumber>, [">= 0"])
-    end
-  else
-    s.add_dependency(%q<active_support>, [">= 3.0.0"])
-    s.add_dependency(%q<couchrest_model>, [">= 1.0.0.beta7"])
-    s.add_dependency(%q<rspec>, [">= 2.0.0"])
-    s.add_dependency(%q<cucumber>, [">= 0"])
-  end
+  s.add_dependency "couchrest_model", ["~> 1.0.0"]
+  s.add_development_dependency "rspec", ["~> 2.0"]
+  s.add_development_dependency "cucumber", ["~> 0.0"]
 end
 
