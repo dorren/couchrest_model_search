@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    couchrest_model_search (0.0.3)
+    couchrest_model_search (0.0.4)
       couchrest_model (~> 1.0.0)
 
 GEM
