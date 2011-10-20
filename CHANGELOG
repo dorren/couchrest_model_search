@@ -1,3 +1,6 @@
+v0.0.6
+  -- `escaped_search` now available on database (raw result response)
+
 v0.0.5
   -- new feature: `escaped_search` (see README)
 
