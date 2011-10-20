@@ -1,3 +1,6 @@
+v0.0.5
+  -- new feature: `escaped_search` (see README)
+
 v0.0.4
 
   -- bug fix: don't update the design doc unless you absolutely have to.
