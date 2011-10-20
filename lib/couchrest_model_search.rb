@@ -66,7 +66,25 @@ module CouchRest
   end
 end
 
+module CouchRest
+  module Search
+    module Escape
+      def escape_special_characters(query)
+        new_query = query.dup
+        lucene_special_characters.map {|c| new_query.gsub!(c, %{\\} + c)}
+        new_query
+      end
+
+      def lucene_special_characters
+        @lucene_special_characters ||= %w[\ + - && || ! ( ) { } [ ] ^ " ~ * ? :]
+      end
+    end
+  end
+end
+
 class CouchRest::Database
+  include CouchRest::Search::Escape
+
   def search(klass, view_fn, query, options={})
     url = CouchRest.paramify_url("#{@root}/_fti/_design/#{klass}/#{view_fn}", options.merge(:q => query))
     ActiveSupport::Notifications.instrument("search.lucene",
@@ -74,22 +92,25 @@ class CouchRest::Database
       CouchRest.get url
     end
   end
+
+  def escaped_search(klass, view_fn, query, options={})
+    search klass, view_fn, escape_special_characters(query), options
+  end
 end
 
 class CouchRest::Model::Base
-  def self.search(query, view_fn="by_fulltext", options={})
-    options[:include_docs] = true
-    ret = self.database.search(self.to_s, view_fn, query, options)
-    ret['rows'].map {|r| self.new(r['doc'])}
-  end
+  class << self
+    include CouchRest::Search::Escape
 
-  def self.escaped_search(query, view_fn="by_fulltext", options={})
-    self.lucene_special_characters.map {|c| query.gsub!(c, %{\\} + c)}
-    self.search query, view_fn, options
-  end
+    def search(query, view_fn="by_fulltext", options={})
+      options[:include_docs] = true
+      ret = self.database.search(self.to_s, view_fn, query, options)
+      ret['rows'].map {|r| self.new(r['doc'])}
+    end
 
-  def self.lucene_special_characters
-    @lucene_special_characters ||= %w[\ + - && || ! ( ) { } [ ] ^ " ~ * ? :]
+    def escaped_search(query, view_fn="by_fulltext", options={})
+      self.search escape_special_characters(query), view_fn, options
+    end
   end
   
   # example search functions

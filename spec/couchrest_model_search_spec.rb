@@ -17,10 +17,17 @@ describe "CouchrestModelSearch" do
   end  
 end
 
-describe "##escaped_search" do
+describe "CouchRest::Model::Base##escaped_search" do
   it "should escape the first parameter, then pass all args off to the search method" do
     Article.should_receive(:search).with('hello\:there', "by_fulltext", {}).and_return nil
     Article.escaped_search "hello:there"
+  end
+end
+
+describe "CouchRest::Database##escaped_search" do
+  it "should escape the third parameter, then pass all args off to the search method" do
+    Article.database.should_receive(:search).with(Article, "by_fulltext", 'hello\:there', {}).and_return nil
+    Article.database.escaped_search Article, "by_fulltext", "hello:there"
   end
 end
   
