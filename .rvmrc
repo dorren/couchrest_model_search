@@ -1,1 +1,1 @@
-rvm 1.8.7@couchrest_model_search --create
+rvm default@couchrest_model_search --create

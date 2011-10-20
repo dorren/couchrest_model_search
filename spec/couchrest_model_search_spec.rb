@@ -16,6 +16,13 @@ describe "CouchrestModelSearch" do
     Article.design_doc["fulltext"].should_not be_nil
   end  
 end
+
+describe "##escaped_search" do
+  it "should escape the first parameter, then pass all args off to the search method" do
+    Article.should_receive(:search).with('hello\:there', "by_fulltext", {}).and_return nil
+    Article.escaped_search "hello:there"
+  end
+end
   
 describe "overwrite design doc" do  
   class CustomArticle < CouchRest::Model::Base

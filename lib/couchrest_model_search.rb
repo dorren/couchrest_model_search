@@ -82,6 +82,15 @@ class CouchRest::Model::Base
     ret = self.database.search(self.to_s, view_fn, query, options)
     ret['rows'].map {|r| self.new(r['doc'])}
   end
+
+  def self.escaped_search(query, view_fn="by_fulltext", options={})
+    self.lucene_special_characters.map {|c| query.gsub!(c, %{\\} + c)}
+    self.search query, view_fn, options
+  end
+
+  def self.lucene_special_characters
+    @lucene_special_characters ||= %w[\ + - && || ! ( ) { } [ ] ^ " ~ * ? :]
+  end
   
   # example search functions
   #   class Aritlce
